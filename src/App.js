@@ -10,14 +10,24 @@ import {
   Switch,
 } from "react-router-dom";
 
+import { useEffect } from "react";
+import { auth } from "./firebase";
+
 function App() {
+  useEffect(() => {
+    auth.onAuthStateChanged((user) => {
+      if (user) {
+        console.log(user);
+      } else {
+        console.log("not logged in");
+      }
+    });
+  }, []);
+
   return (
     <Routes>
-      {/* <div className="app"> */}
-      {/* <Header /> */}
       <Route path="/" element={<Home />} />
       <Route path="/checkout" element={<Checkout />} />
-      {/* </div> */}
       <Route path="/login" element={<Login />} />
     </Routes>
   );

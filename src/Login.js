@@ -1,12 +1,13 @@
 import React, { useState } from "react";
 import "./Login.css";
 import { Link } from "react-router-dom";
-import { auth } from "./firebase.js";
+import { createUserWithEmailAndPassword, getAuth } from "firebase/auth";
+import firebaseApp from "./firebase";
 
 function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-
+  const auth = getAuth(firebaseApp);
   const signIn = (e) => {
     e.preventDefault();
   };
@@ -14,10 +15,9 @@ function Login() {
   const register = (e) => {
     e.preventDefault();
 
-    auth
-      .createUserWithEmailAndPassword(email, password)
-      .then((auth) => {
-        console.log(auth);
+    createUserWithEmailAndPassword(auth, email, password)
+      .then((userCredential) => {
+        console.log(userCredential.user.email);
       })
       .catch((error) => alert(error.message));
   };

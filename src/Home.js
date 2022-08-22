@@ -16,7 +16,7 @@ function Home() {
 
           <div className="home__row">
             <Product
-              title="Lavde! 80,000 ke jhoothe hai! Isme tera ghar jaaega"
+              title="Shoes"
               price={80000}
               image="https://www.highsnobiety.com/static-assets/thumbor/nI3VcQHauvbw62L6WpDwSXoTS3A=/1600x1067/www.highsnobiety.com/static-assets/wp-content/uploads/2021/02/12163548/air-jordan-1-university-blue-release-info-02.jpg"
               rating={8}

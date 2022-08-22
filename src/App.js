@@ -3,6 +3,8 @@ import Home from "./Home";
 import Checkout from "./Checkout";
 import Login from "./Login";
 
+import { getAuth } from "firebase/auth";
+
 import {
   BrowserRouter as Router,
   Route,
@@ -12,14 +14,27 @@ import {
 
 import { useEffect } from "react";
 import { auth } from "./firebase";
+import { useStateValue } from "./Provider";
+import firebaseApp from "./firebase";
+const authh = getAuth(firebaseApp);
 
 function App() {
+  const [{}, dispatch] = useStateValue();
+
   useEffect(() => {
-    auth.onAuthStateChanged((user) => {
+    authh.onAuthStateChanged((user) => {
+      console.log(user);
+
       if (user) {
-        console.log(user);
+        dispatch({
+          type: "SET_USER",
+          user: user,
+        });
       } else {
-        console.log("not logged in");
+        dispatch({
+          type: "SET_USER",
+          user: null,
+        });
       }
     });
   }, []);

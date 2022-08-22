@@ -9,9 +9,23 @@ import {
   Link,
 } from "react-router-dom";
 import { useStateValue } from "./Provider";
+import firebaseApp from "./firebase.js";
+import { getAuth } from "firebase/auth";
 
 function Header() {
-  const [{ basket }, dispatch] = useStateValue();
+  const [{ basket, user }, dispatch] = useStateValue();
+
+  const handleAuthentication = () => {
+    const auth = getAuth(firebaseApp);
+
+    if (user) {
+      auth.signOut();
+      dispatch({
+        type: "SET_USER",
+        user: null,
+      });
+    }
+  };
 
   return (
     <div>
@@ -24,10 +38,12 @@ function Header() {
           <AiOutlineSearch className="header_searchIcon" />
         </div>
         <div className="header_nav">
-          <Link to="/login">
-            <div className="header_option">
+          <Link to={!user && "/login"}>
+            <div onClick={handleAuthentication} className="header_option">
               <span className="header_optionLineOne">Hello</span>
-              <span className="header_optionLineTwo">Sign In</span>
+              <span className="header_optionLineTwo">
+                {user ? "Sign Out" : "Sign In"}
+              </span>
             </div>
           </Link>
           <div className="header_option">

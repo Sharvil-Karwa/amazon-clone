@@ -2,6 +2,7 @@ import "./App.css";
 import Home from "./Home";
 import Checkout from "./Checkout";
 import Login from "./Login";
+import Payment from "./Payment";
 
 import { getAuth } from "firebase/auth";
 
@@ -41,9 +42,10 @@ function App() {
 
   return (
     <Routes>
-      <Route path="/" element={<Home />} />
       <Route path="/checkout" element={<Checkout />} />
       <Route path="/login" element={<Login />} />
+      <Route path="/payment" element={<Payment />} />
+      <Route path="/" element={<Home />} />
     </Routes>
   );
 }

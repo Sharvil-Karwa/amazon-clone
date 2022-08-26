@@ -15,7 +15,6 @@ function Login() {
   const auth = getAuth(firebaseApp);
   const signIn = (e) => {
     e.preventDefault();
-
     signInWithEmailAndPassword(auth, email, password)
       .then(() => {
         Navigate("/");
@@ -27,7 +26,6 @@ function Login() {
 
   const register = (e) => {
     e.preventDefault();
-
     createUserWithEmailAndPassword(auth, email, password)
       .then((userCredential) => {
         console.log(userCredential.user.email);

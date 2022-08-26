@@ -6,7 +6,7 @@ import {
   useElements,
   CardElement,
 } from "@stripe/react-stripe-js";
-import React from "react";
+import React, { useEffect } from "react";
 import Header from "./Header";
 import { useStateValue } from "./Provider";
 import CheckoutProduct from "./CheckoutProduct";
@@ -26,11 +26,26 @@ function Payment() {
     const stripe = useStripe(); const elements = useElements();
   </Elements>;
 
+  const [succeeded, setSucceeded] = useState(false);
+  const [processing, setProcessing] = useState("");
+
   const [error, setError] = useState(null);
   const [disabled, setDisabled] = useState(true);
+  const [clientSecret, setClientSecret] = useState(true);
 
-  const handleSubmit = function (e) {
-    console.log("handleSubmit");
+  useEffect(() => {
+    const getClientSecret = async () => {
+      const response = await axios({
+        method: "post",
+        url: `/payments/create?total=${getBasketTotal(basket) * 100}`,
+      });
+    };
+    getClientSecret();
+  }, [basket]);
+
+  const handleSubmit = async (event) => {
+    event.preventDefault();
+    setProcessing(true);
   };
 
   const handleChange = function (e) {
@@ -96,7 +111,11 @@ function Payment() {
                       thousandSeparator={true}
                       prefix={"$"}
                     />
+                    <button disabled={processing || disabled || succeeded}>
+                      <span>{processing ? <p>Processing</p> : "Buy Now"}</span>
+                    </button>
                   </div>
+                  {error && <div>{error}</div>}
                 </form>
               </div>
             </div>

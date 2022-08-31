@@ -10,10 +10,11 @@ import React, { useEffect } from "react";
 import Header from "./Header";
 import { useStateValue } from "./Provider";
 import CheckoutProduct from "./CheckoutProduct";
-import { Link } from "react-router-dom";
+import { Link, Navigate } from "react-router-dom";
 import { useState } from "react";
 import { getBasketTotal } from "./reducer";
 import CurrencyFormat from "react-currency-format";
+import axios from "axios";
 
 const promise = loadStripe(
   "pk_test_51LaK3DSBJfHEA9CcJjTlzpyOrlfLwphQsrETjJjmUicb5dWOQVlkpcm6WdYaLhqJmEgfV8cA8E9y2WCUxnfDrvA600TnQwf8Xm"
@@ -22,9 +23,8 @@ const promise = loadStripe(
 function Payment() {
   const [{ basket, user }, dispatch] = useStateValue();
 
-  <Elements stripe={promise}>
-    const stripe = useStripe(); const elements = useElements();
-  </Elements>;
+  const stripe = useStripe();
+  const elements = useElements();
 
   const [succeeded, setSucceeded] = useState(false);
   const [processing, setProcessing] = useState("");
@@ -39,6 +39,7 @@ function Payment() {
         method: "post",
         url: `/payments/create?total=${getBasketTotal(basket) * 100}`,
       });
+      setClientSecret(response.data.clientSecret);
     };
     getClientSecret();
   }, [basket]);
@@ -46,6 +47,23 @@ function Payment() {
   const handleSubmit = async (event) => {
     event.preventDefault();
     setProcessing(true);
+
+    const payload = await stripe
+      .confirmCardPayment(clientSecret, {
+        payment_method: {
+          card: elements.getElement(CardElement),
+        },
+      })
+      .then(({ paymentIntent }) => {
+        setSucceeded(true);
+        setError(null);
+        setProcessing(false);
+        Navigate("/orders");
+      })
+      .catch((error) => {
+        setError(error);
+        setProcessing(false);
+      });
   };
 
   const handleChange = function (e) {
